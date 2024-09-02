@@ -70,7 +70,7 @@ You can check the estimate cost by using [AWS Pricing Calculator](https://calcul
 
 - Execute the build pipeline and confirm the container image is built.
 
-    You can check the build process succeeded in AWS Console (automatic build by a push event to the GitHub repository):
+    You can check the status of build process in the AWS Console (below one is triggerd by a push event to the GitHub repository):
 
     ![aws_codebuild](./screenshots/aws_codebuild.png)
 
@@ -279,6 +279,14 @@ You can check running k8s components.
     The services for analytics application (`coworking`) and for PostgreSQL (`postgresql-service`) are running (`kubernetes` is a default service to provide endpoints to the Kubernetes API server).
 
     ![svc](./screenshots/kubectl_get_svc.png)
+
+- Description of the Postgres service: `kubectl describe svc postgresql-service`
+
+    ![postgresql-serivce](./screenshots/kubectl_describe_svc.png)
+
+- Description of the deployment: `kubectl describe deployment coworking`
+
+    ![coworking-deployment](./screenshots/kubectl_describe_deployment.png)
 
 
 #### 5. Monitoring by the AWS CloudWatch
