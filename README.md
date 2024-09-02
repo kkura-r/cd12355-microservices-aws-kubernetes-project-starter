@@ -54,16 +54,23 @@ You can check the estimate cost by using [AWS Pricing Calculator](https://calcul
 
 #### Prerequisites
 
-- Establish connection to AWS service account (by `aws configure`).
+
+
+- Establish connection to AWS service account with `aws configure`.
+    - Reference: [Configure Your Account usign AWS CLI - AWS Documentation](https://docs.aws.amazon.com/govcloud-us/latest/UserGuide/configure-using-cli.html)
 - Create a container repository in AWS ECR. It is named as `coworking` in this repository.
+    - Reference: [Creating an Amazon ECR private repository to store images - AWS Documentation](https://docs.aws.amazon.com/AmazonECR/latest/userguide/repository-create.html)
 - Create a build pipeline in AWS CodeBuild.
     - Set this Github repository for the source provider.
-    - Use a buildspec file in this repository.
-    - You can trigger a pipeline automatically by the event (e.g. push to the repository)
+        - Reference: [Access your source provider in CodeBuild - AWS Documentation](https://docs.aws.amazon.com/codebuild/latest/userguide/access-tokens.html)
+    - Define a build specification. Default specification is defined in `buildspec.yaml` in this repository.
+        - Reference: [Build specification reference for CodeBuild - AWS Documentation](https://docs.aws.amazon.com/codebuild/latest/userguide/build-spec-ref.html)
+    - You can trigger a pipeline automatically by the event (e.g. trigger when the fix is pushed to the repository)
+        - Reference: [Trigger AWS CodeBuild builds automatically - AWS Documentation](https://docs.aws.amazon.com/codebuild/latest/userguide/build-triggers.html)
 
 - Execute the build pipeline and confirm the container image is built.
 
-    You can check the build process succeeded in AWS Console:
+    You can check the build process succeeded in AWS Console (automatic build by a push event to the GitHub repository):
 
     ![aws_codebuild](./screenshots/aws_codebuild.png)
 
@@ -156,7 +163,8 @@ Configure a database by using manifest files in `deployments`.
 
 5. Run seed files
 
-    You can check the database access by running seed files.
+    You can check the database access by running seed files to initialize database entries.
+
     Install requirements with
 
     ```sh
@@ -175,7 +183,7 @@ Configure a database by using manifest files in `deployments`.
     cd ..
     ```
 
-    You can open the psql terminal with
+    You can open the `psql` terminal with
 
     ```sh
     $ PGPASSWORD="$DB_PASSWORD" psql --host 127.0.0.1 -U myuser -d mydatabase -p 5433
@@ -214,7 +222,7 @@ Configure a database by using manifest files in `deployments`.
 
 #### 3. Build the Analytics Application Locally
 
-In the `analytics/` directory
+You can build and check the analytics application locally (following commands are executed in the `analytics/` directory).
 
 1. Install dependencies
 
@@ -258,18 +266,22 @@ Deploy the analytics application with
 $ kubectl apply -f deployments/coworking.yaml
 ```
 
-You can check running applications like as
+You can check running k8s components.
 
-- Pods
+- Pods: `kubectl get pods`
+
+    The pods for analytics application (`coworking-***`) and the Postgres service (`postgresql-***`) are running.
 
     ![pods](./screenshots/kubectl_get_pods.png)
 
-- Services
+- Services: `kubectl get svc`
+
+    The services for analytics application (`coworking`) and for PostgreSQL (`postgresql-service`) are running (`kubernetes` is a default service to provide endpoints to the Kubernetes API server).
 
     ![svc](./screenshots/kubectl_get_svc.png)
 
 
-#### 5. CloudWatch
+#### 5. Monitoring by the AWS CloudWatch
 
 You can monitor performance status with AWS CloudWatch and Container Insights feature.
 
@@ -277,7 +289,7 @@ You can monitor performance status with AWS CloudWatch and Container Insights fe
 
 ![containerinsights](./screenshots/cloudwatch_containerinsights.png)
 
-I had some troubles while checking Container Insights and resolve with following references:
+I had some troubles while activating Container Insights and resolve with following references:
 
 - [(Japanese page) Amazon EKS に Container Insights を導入する手順をまとめてみた](https://nobelabo.hatenablog.com/entry/2023/04/10/084004#agenda1)
 - [Quick Start with the CloudWatch agent operator and Fluent Bit - AWS](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Container-Insights-setup-EKS-quickstart.html#Container-Insights-setup-EKS-quickstart-FluentBit)
